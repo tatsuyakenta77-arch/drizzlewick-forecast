@@ -17,13 +17,24 @@ ENTRY = (
 
 OUTPUT_PATH = "/output/entry.txt"
 
+MAX_CHARS = 140
+MIN_CHARS = 1
+
+
+def validate_entry(text: str) -> None:
+    """Enforce the gate: 1-140 characters, one non-blank line."""
+    if not MIN_CHARS <= len(text) <= MAX_CHARS:
+        raise ValueError(
+            f"entry is {len(text)} characters, must be "
+            f"{MIN_CHARS}-{MAX_CHARS}"
+        )
+    if not text.strip() or "\n" in text or "\r" in text:
+        raise ValueError("entry must be one non-blank line")
+
 
 def main() -> None:
+    validate_entry(ENTRY)
     text = ENTRY
-    if not 1 <= len(text) <= 140:
-        raise ValueError(f"entry is {len(text)} characters, must be 1-140")
-    if not text.strip():
-        raise ValueError("entry must not be only whitespace")
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     # No trailing newline: the file holds exactly the entry text.
     with open(OUTPUT_PATH, "w", encoding="utf-8", newline="\n") as f:
